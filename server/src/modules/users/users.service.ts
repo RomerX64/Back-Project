@@ -7,8 +7,7 @@ export class UsersService {
     constructor(
         private usersRepository: UserRepository
     ) {}
-
     getUsers() {
         return this.usersRepository.getUsers();
-    }
+    }   
 }
