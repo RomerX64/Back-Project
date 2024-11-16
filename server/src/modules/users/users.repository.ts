@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import UserDto from 'src/dto/UserDto';
 import ICredential from 'src/entities/ICredential';
 import IUser from 'src/entities/IUser';
@@ -54,13 +54,18 @@ export class UserRepository {
         },
       ]
 
-    async getUsers() {
+    async getUsers():Promise<IUser[]> {
         return this.users;
     }
 
     async getUser(id:number):Promise<IUser> {
-      const User = this.users.find(user => user.id === id)
-      return User
+      try {
+        const User = this.users.find(user => user.id === id)
+        if(!User)throw new Error('User not found')
+        return User
+      } catch (error) {
+        throw new HttpException(error, HttpStatus.NOT_FOUND)
+      } 
     }
 
     async newCredential({email, password, id}): Promise<ICredential> {
@@ -73,21 +78,25 @@ export class UserRepository {
     }
 
     async NewUser(newUserData:UserDto):Promise<IUser> {
-      const {email, password} = newUserData
-      const id = 1
-      const credential = await this.newCredential({email, password, id})
-
-      const User = {
-        id,
-        name: newUserData.name,
-        address: newUserData.address,
-        phone: newUserData.phone,
-        country: newUserData.country,
-        city: newUserData.city,
-        credentialID: credential.id
+      try {
+        const {email, password} = newUserData
+        const id = 1
+        const credential = await this.newCredential({email, password, id})
+  
+        const User = {
+          id,
+          name: newUserData.name,
+          address: newUserData.address,
+          phone: newUserData.phone,
+          country: newUserData.country,
+          city: newUserData.city,
+          credentialID: credential.id
+        }
+  
+        return User
+      } catch (error) {
+        throw new HttpException(error, HttpStatus.BAD_REQUEST)
       }
-
-      return User
     }
 
 

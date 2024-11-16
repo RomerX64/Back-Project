@@ -8,14 +8,11 @@ export class UsersService {
     constructor(
         private usersRepository: UserRepository
     ) {}
-    async getUsers() {
+    async getUsers():Promise<IUser[]> {
         try {
-            return this.usersRepository.getUsers();
-            
+            return this.usersRepository.getUsers();         
         } catch (error) {
-
-            new HttpException(error, HttpStatus.NOT_FOUND);
-            
+            throw new HttpException(error, HttpStatus.NOT_FOUND);
         }
     }   
 
@@ -23,7 +20,7 @@ export class UsersService {
         try {
             return this.usersRepository.getUser(id);
         } catch (error) {
-            new HttpException(error, HttpStatus.NOT_FOUND);
+            throw new HttpException(error, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -32,7 +29,7 @@ export class UsersService {
             return this.usersRepository.NewUser(newUserData)
 
         } catch (error) {
-            new HttpException(error, HttpStatus.BAD_REQUEST);      
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);      
         }
     }
 }
