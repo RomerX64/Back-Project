@@ -99,5 +99,11 @@ export class UserRepository {
       }
     }
 
+    async updateUser(id:number, updateUserData:UserDto):Promise<IUser> {
+      const User = await this.getUser(id)
+      if(!User)throw new Error('User not found')
+      return Object.assign(User, updateUserData)
+    }
+
 
 }

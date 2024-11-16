@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import UserDto from 'src/dto/UserDto';
 import IUser from 'src/entities/IUser';
@@ -31,6 +31,22 @@ export class UsersController {
     return await this.usersService.NewUser(newUserData)
   }
 
+
+  @Put(':id')
+  async updateUser(
+    @Param('id') id: string, 
+    @Body() updateUserData:UserDto,
+    @Headers('token') token: string
+  ): Promise<IUser>{
+      try {
+        if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
+        if(!updateUserData || Object.keys(updateUserData).length === 0)throw new HttpException('No data provided to update', HttpStatus.BAD_REQUEST)
+      return await this.usersService.updateUser(Number(id), updateUserData)
+      } catch (error) {
+        if(error instanceof HttpException)throw error
+        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      }
+  }
  
 
 }

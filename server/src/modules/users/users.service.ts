@@ -32,4 +32,12 @@ export class UsersService {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);      
         }
     }
+
+    async updateUser(id:number, updateUserData:UserDto):Promise<IUser> {
+        try {
+            return this.usersRepository.updateUser(id, updateUserData)
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.NOT_FOUND);
+        }
+    }
 }
