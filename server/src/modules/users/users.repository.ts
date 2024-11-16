@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import UserDto from 'src/dto/UserDto';
+import ICredential from 'src/entities/ICredential';
+import IUser from 'src/entities/IUser';
 
 @Injectable()
 export class UserRepository {
@@ -57,4 +60,33 @@ export class UserRepository {
     async getUsers() {
         return this.users;
     }
+
+    async newCredential({email, password, id}): Promise<ICredential> {
+      return {
+        id:1,
+        email,
+        password,
+        userId:id
+      }
+    }
+
+    async NewUser(newUserData:UserDto):Promise<IUser> {
+      const {email, password} = newUserData
+      const id = 1
+      const credential = await this.newCredential({email, password, id})
+
+      const User = {
+        id,
+        name: newUserData.name,
+        address: newUserData.address,
+        phone: newUserData.phone,
+        country: newUserData.country,
+        city: newUserData.city,
+        credentialID: credential.id
+      }
+
+      return User
+    }
+
+
 }
