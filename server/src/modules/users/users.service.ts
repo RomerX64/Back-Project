@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './users.repository';
 import IUser from 'src/entities/IUser';
 import UserDto from 'src/dto/UserDto';
@@ -9,10 +9,30 @@ export class UsersService {
         private usersRepository: UserRepository
     ) {}
     async getUsers() {
-        return this.usersRepository.getUsers();
+        try {
+            return this.usersRepository.getUsers();
+            
+        } catch (error) {
+
+            new HttpException(error, HttpStatus.NOT_FOUND);
+            
+        }
     }   
 
+    async getUser(id:number):Promise<IUser>{
+        try {
+            return this.usersRepository.getUser(id);
+        } catch (error) {
+            new HttpException(error, HttpStatus.NOT_FOUND);
+        }
+    }
+
     async NewUser(newUserData:UserDto):Promise<IUser>{
-        return this.usersRepository.NewUser(newUserData)
+        try {
+            return this.usersRepository.NewUser(newUserData)
+
+        } catch (error) {
+            new HttpException(error, HttpStatus.BAD_REQUEST);      
+        }
     }
 }
