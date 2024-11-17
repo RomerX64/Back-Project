@@ -40,4 +40,12 @@ export class UsersService {
             throw new HttpException(error, HttpStatus.NOT_FOUND);
         }
     }
+
+    async deleteUser(id:number):Promise<IUser>{
+        try {
+            return this.usersRepository.deleteUser(id)
+        } catch (error) {
+            throw new HttpException(error, HttpStatus.NOT_FOUND);
+        }
+    }
 }

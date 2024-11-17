@@ -105,5 +105,17 @@ export class UserRepository {
       return Object.assign(User, updateUserData)
     }
 
+  async deleteUser(id:number):Promise<IUser>{
+    try {
+      const User = await this.getUser(id)
+      if(!User)throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+      this.users = this.users.filter(user => user.id !== id)
+      return User
+    } catch (error) {
+      if(error instanceof HttpException) throw error
+      throw new HttpException(error, HttpStatus.NOT_ACCEPTABLE);
+    }
+  }
+
 
 }
