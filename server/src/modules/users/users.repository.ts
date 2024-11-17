@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import CredentialDto from 'src/dto/CredentialDto';
 import UserDto from 'src/dto/UserDto';
 import ICredential from 'src/entities/ICredential';
 import IUser from 'src/entities/IUser';
+import { AuthRepository } from '../auth/auth.repository';
 
 @Injectable()
 export class UserRepository {
@@ -53,7 +55,9 @@ export class UserRepository {
           city: "Bogotá",
         },
       ]
-
+    constructor(
+      private authRepository:AuthRepository
+    ){}
     async getUsers():Promise<IUser[]> {
         return this.users;
     }
@@ -105,10 +109,12 @@ export class UserRepository {
       return Object.assign(User, updateUserData)
     }
 
-  async deleteUser(id:number):Promise<IUser>{
+  async deleteUser(id:number, credentialDta:CredentialDto):Promise<IUser>{
     try {
       const User = await this.getUser(id)
       if(!User)throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+      const T = this.authRepository.deleteCredential(credentialDta)
+      if(!T)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
       this.users = this.users.filter(user => user.id !== id)
       return User
     } catch (error) {

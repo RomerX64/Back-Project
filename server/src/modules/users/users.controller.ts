@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpCode, HttpException, HttpSt
 import { UsersService } from './users.service';
 import UserDto from 'src/dto/UserDto';
 import IUser from 'src/entities/IUser';
+import CredentialDto from 'src/dto/CredentialDto';
 
 @Controller('users')
 export class UsersController {
@@ -49,10 +50,16 @@ export class UsersController {
   }
  
   @Delete(':id')
-  async deleteUser(@Param('id') id: string, @Headers('token') token: string):Promise<IUser>{
+  async deleteUser(
+    @Param('id') id: string,
+    @Headers('token') token: string,
+    @Body() credentialDta:CredentialDto
+    ):Promise<IUser>{
     try {
       if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
-      return await this.usersService.deleteUser(Number(id))
+      if(!credentialDta || Object.keys(credentialDta).length === 0)throw new HttpException('No credentials provider', HttpStatus.BAD_REQUEST)
+
+      return await this.usersService.deleteUser(Number(id), credentialDta)
     } catch (error) {
       if(error instanceof HttpException)throw error
       throw new HttpException(error, HttpStatus.NOT_FOUND);

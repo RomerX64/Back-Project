@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './users.repository';
 import IUser from 'src/entities/IUser';
 import UserDto from 'src/dto/UserDto';
+import CredentialDto from 'src/dto/CredentialDto';
 
 @Injectable()
 export class UsersService {
@@ -41,9 +42,9 @@ export class UsersService {
         }
     }
 
-    async deleteUser(id:number):Promise<IUser>{
+    async deleteUser(id:number, credentialDta:CredentialDto):Promise<IUser>{
         try {
-            return this.usersRepository.deleteUser(id)
+            return this.usersRepository.deleteUser(id, credentialDta)
         } catch (error) {
             throw new HttpException(error, HttpStatus.NOT_FOUND);
         }
