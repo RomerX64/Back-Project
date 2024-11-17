@@ -106,9 +106,9 @@ export class OrderRepository{
         }
     }
 
-    async getOrder(id:number, userId:number):Promise<IOrder>{
+    async getOrder(orderId:number, userId:number):Promise<IOrder>{
         try {
-            const order = this.orders.find(o=>o.id === id)
+            const order = this.orders.find(o=>o.id === orderId)
             if(!order)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
             if(order.userId !== userId)throw new HttpException('This order is not you propety', HttpStatus.NOT_ACCEPTABLE)
             return order
@@ -132,6 +132,7 @@ export class OrderRepository{
                 userId,
             }
             if(!order)throw new HttpException('We can not create this order', HttpStatus.BAD_REQUEST)
+                this.orders.push(order)
             return order
         } catch (error) {
             throw error
@@ -140,10 +141,16 @@ export class OrderRepository{
 
     async updateOrder(orderId:number,productToUpdate:OrderDto, userId:number):Promise<IOrder>{
         try {
+            const getAmount = (products:IProduct[]):number =>{
+                let count = 0
+                products.map(p => count = p.price + count  )
+                return count
+            }
             const order = this.orders.find(o => o.id === orderId)
             if(!order)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
             if(order.userId !== userId) throw new HttpException('This order is not you propety', HttpStatus.NOT_ACCEPTABLE) 
-            order.products = productToUpdate.products 
+            order.products = productToUpdate.products
+            order.amount = getAmount(order.products)
             this.orders = this.orders.map(o => (o.id === orderId ? order : o));
             return order
         } catch (error) {
@@ -152,11 +159,16 @@ export class OrderRepository{
     }
 
     async deleteOrder(userId:number, orderId:number):Promise<IOrder>{
-        const order = this.orders.find(o => o.id === orderId)
-        if(!order)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
-        if(order.userId !== userId) throw new HttpException('This order is not you propety', HttpStatus.NOT_ACCEPTABLE) 
-        this.orders = this.orders.map(o => (o.id === orderId ? null : o))
-        return order
+        try {
+            const order = this.orders.find(o => o.id === orderId)
+            if(!order)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
+            if(order.userId !== userId) throw new HttpException('This order is not you propety', HttpStatus.NOT_ACCEPTABLE) 
+            this.orders = this.orders.map(o => (o.id === orderId ? null : o))
+            return order
+            
+        } catch (error) {
+            throw error
+        }
 
     }
 }

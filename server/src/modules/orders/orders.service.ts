@@ -18,9 +18,9 @@ export class OrdersService {
         }
     }
 
-    async getOrder(id:number, userId:number):Promise<IOrder>{
+    async getOrder(orderId:number, userId:number):Promise<IOrder>{
         try {
-            return this.orderRepository.getOrder(id, userId)
+            return this.orderRepository.getOrder(orderId, userId)
         } catch (error) {
             throw error
         }
