@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import ProductDto from 'src/dto/ProductDto';
+import IProduct from 'src/entities/IProduct';
 
 
 @Injectable()
 export class ProductsRepository{
-    private products = [
+    private products:IProduct[] = [
         {
             id: 1,
             name: "Smartphone X1000",
@@ -45,7 +47,67 @@ export class ProductsRepository{
             imgUrl: "https://example.com/images/reloj-q2.jpg"
           }
     ]
-    async getProducts(){
+    async getProducts():Promise<IProduct[]>{
+      try {
         return this.products;
+
+      } catch (error) {
+        throw error
+      }  
+    }
+
+    async getProduct(id:number):Promise<IProduct>{
+      try {
+
+        const product = this.products.find(product => product.id === id)
+
+        if(!product)throw new HttpException('Product not found', HttpStatus.NOT_FOUND)
+
+        return product 
+
+      } catch (error) {
+
+        throw error
+      }
+    }
+
+    async newProduct(newProductDta:ProductDto):Promise<IProduct>{
+      try {
+        const product ={
+          id: this.products.length +1,
+          ...newProductDta
+        }
+        if(!product) throw new HttpException('We could not create the product', HttpStatus.BAD_REQUEST)
+          this.products.push(product)
+        return product
+      } catch (error) {
+        if(error instanceof HttpException)throw error
+        throw new HttpException(error, HttpStatus.CONFLICT);
+      }
+    }
+
+    async updateProduct(id:number, updateProductDta:ProductDto):Promise<IProduct>{
+      try {
+        const product = this.getProduct(id)
+        if(!product)throw new HttpException('Product not found', HttpStatus.NOT_FOUND)
+        this.products.filter(product => product.id !== id)  
+        return Object.assign(product, updateProductDta)
+       
+      
+      } catch (error) {
+        if(error instanceof HttpException)throw error
+        throw new HttpException(error, HttpStatus.CONFLICT);
+      }
+    }
+
+    async deleteProduct(id:number):Promise<IProduct>{
+      try {
+        const p = this.getProduct(id)
+        if(!p)throw new HttpException('Product not found', HttpStatus.NOT_FOUND)
+        this.products = this.products.filter(product => product.id !== id)
+        return p
+      } catch (error) {
+        throw error
+      }
     }
 }
