@@ -11,15 +11,15 @@ export class AuthController{
     ){}
 
     @Get(':userId')
-    async getCredentialIDByUserId(
+    async getEmailByUserId(
         @Param('userId') userId:string,
         @Headers('range') range:string,
         @Headers('password') password:string
-    ):Promise<number>{
+    ):Promise<string>{
         try {
             if(password !== 'admin')throw new HttpException('you do not have permission', HttpStatus.UNAUTHORIZED)
             if(range !== 'admin')throw new HttpException('you do not have permission', HttpStatus.UNAUTHORIZED)
-            return this.authService.getCredentialByID(Number(userId))
+            return this.authService.getEmailByUserId(Number(userId))
         } catch (error) {
          if(error instanceof HttpException)throw error
          throw new HttpException(error, HttpStatus.CONFLICT)   

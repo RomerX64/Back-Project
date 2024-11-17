@@ -59,11 +59,11 @@ export class AuthRepository{
         }
     }
 
-    async getCredentialByID(userId:number):Promise<number>{
+    async getEmailByUserId(userId:number):Promise<string>{
         try {
             const credential = this.credentials.find(o => o.userId === userId)
             if(!credential)throw new HttpException('Credential no found', HttpStatus.NOT_FOUND)
-            return credential.id
+            return credential.email
         } catch (error) {
             throw error
         }

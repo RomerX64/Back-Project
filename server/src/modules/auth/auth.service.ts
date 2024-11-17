@@ -19,9 +19,9 @@ export class AuthService{
         }
     }
 
-    async getCredentialByID(userId:number):Promise<number>{
+    async getEmailByUserId(userId:number):Promise<string>{
         try {
-            return this.authRepository.getCredentialByID(userId)
+            return this.authRepository.getEmailByUserId(userId)
         } catch (error) {
             throw error
         }
