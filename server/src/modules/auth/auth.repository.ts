@@ -36,6 +36,17 @@ export class AuthRepository{
         password: "UltraSecure!99",
         email: "user5@example.com"
       }] 
+    
+    async newCredential(credentialDta:CredentialDto, userId:number):Promise<number>{
+        const exist = this.credentials.some(c => c.email === credentialDta.email)
+        if(exist)throw new HttpException('Email already exist', HttpStatus.BAD_REQUEST)
+        const c = {
+            id: this.credentials.length + 1,
+            ...credentialDta,
+            userId
+        }
+        return c.id
+    }
 
     async getCredential(credentialDta:CredentialDto):Promise<ICredential>{
         try {

@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import CredentialDto from 'src/dto/CredentialDto';
 import UserDto from 'src/dto/UserDto';
-import ICredential from 'src/entities/ICredential';
 import IUser from 'src/entities/IUser';
 import { AuthRepository } from '../auth/auth.repository';
 
@@ -72,29 +71,18 @@ export class UserRepository {
       } 
     }
 
-    async newCredential({email, password, id}): Promise<ICredential> {
-      return {
-        id:1,
-        email,
-        password,
-        userId:id
-      }
-    }
-
     async NewUser(newUserData:UserDto):Promise<IUser> {
       try {
-        const {email, password} = newUserData
-        const id = 1
-        const credential = await this.newCredential({email, password, id})
-  
+        const {email, password}:CredentialDto = newUserData
+
         const User = {
-          id,
+          id:this.users.length +1,
           name: newUserData.name,
           address: newUserData.address,
           phone: newUserData.phone,
           country: newUserData.country,
           city: newUserData.city,
-          credentialID: credential.id
+          credentialID: await this.authRepository.newCredential({email, password}, this.users.length +1)
         }
   
         return User
