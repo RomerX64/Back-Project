@@ -12,12 +12,12 @@ export class Order{
 
     @ManyToOne(() => User, (User) => User.id)
     @JoinColumn()
-    userId:User
+    user:User
     
     @Column()
     date:Date
 
-    @OneToOne(()=>OrderDetail, (OrderDetail)=>OrderDetail.orderId)
+    @OneToOne(()=>OrderDetail, (OrderDetail)=>OrderDetail.orderId, {cascade:true})
     @JoinColumn() 
     detail:OrderDetail
 

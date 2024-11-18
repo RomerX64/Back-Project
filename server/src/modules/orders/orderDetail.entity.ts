@@ -22,7 +22,7 @@ export class OrderDetail{
     @JoinColumn()
     orderId:Order
 
-    @ManyToMany(()=>Product,(product) => product.id)
+    @ManyToMany(()=>Product,(product) => product.id, {cascade:true})
     @JoinColumn()
     products:Product[]
 }

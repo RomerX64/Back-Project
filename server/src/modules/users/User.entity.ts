@@ -32,7 +32,7 @@ export class User{
     @Column({ nullable: true })
     city: string | undefined;
   
-    @OneToMany(()=>Order, (Order)=>Order.userId)
+    @OneToMany(()=>Order, (Order)=>Order.user, {cascade:true})
     @JoinColumn()
     orders:Order[]
 
