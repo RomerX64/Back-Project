@@ -1,12 +1,11 @@
 import { Body, Controller, Delete, Get, Headers, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
-import { UsersService } from './users.service';
 import UserDto from 'src/dto/UserDto';
-import IUser from 'src/interfaces/IUser';
 import CredentialDto from 'src/dto/CredentialDto';
-
+import { UserDBService } from './UserDB.service';
+import { User } from './User.entity';
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
+  constructor(private readonly usersService: UserDBService) {
   }
 
   @HttpCode(200)
@@ -16,10 +15,14 @@ export class UsersController {
   }
 
   @HttpCode(200)
-  @Get(':id')
-  async getUser(@Param('id') id: string):Promise<IUser>{
+  @Get(':userId')
+  async getUser(
+    @Param('userId') userId: string,
+    @Headers('email') email: string,
+    @Headers('password') password: string
+):Promise<User>{
     try {
-      return await this.usersService.getUser(Number(id));
+      return await this.usersService.getUser(userId, {email, password});
     } catch (error) {
       
       throw new HttpException(error, HttpStatus.NOT_FOUND);
@@ -28,38 +31,47 @@ export class UsersController {
 
   @HttpCode(201)
   @Post()
-  async NewUser(@Body() newUserData:UserDto): Promise<IUser>{
-    return await this.usersService.NewUser(newUserData)
+  async NewUser(
+    @Body() newUserData:UserDto,
+    @Body() credentialDta:CredentialDto
+  ): Promise<User>{
+    try {
+      return await this.usersService.newUser(newUserData, credentialDta)
+    } catch (error) {
+      if(error instanceof HttpException)throw error
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+   
   }
 
 
-  @Put(':id')
+  @Put(':userId')
   async updateUser(
-    @Param('id') id: string, 
+    @Param('userId') userId: string, 
     @Body() updateUserData:UserDto,
     @Headers('token') token: string
-  ): Promise<IUser>{
+  ): Promise<User>{
       try {
         if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
         if(!updateUserData || Object.keys(updateUserData).length === 0)throw new HttpException('No data provided to update', HttpStatus.NO_CONTENT)
-      return await this.usersService.updateUser(Number(id), updateUserData)
+      return await this.usersService.updateUser(userId, updateUserData)
       } catch (error) {
         if(error instanceof HttpException)throw error
         throw new HttpException(error, HttpStatus.BAD_REQUEST);
       }
   }
  
-  @Delete(':id')
+  @Delete(':userId')
   async deleteUser(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
     @Headers('token') token: string,
     @Body() credentialDta:CredentialDto
-    ):Promise<IUser>{
+    ):Promise<User>{
     try {
       if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
       if(!credentialDta || Object.keys(credentialDta).length === 0)throw new HttpException('No credentials provider', HttpStatus.BAD_REQUEST)
 
-      return await this.usersService.deleteUser(Number(id), credentialDta)
+      return await this.usersService.deleteUser(userId, credentialDta)
     } catch (error) {
       if(error instanceof HttpException)throw error
       throw new HttpException(error, HttpStatus.NOT_FOUND);

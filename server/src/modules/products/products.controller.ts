@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put} from '@nestjs/common';
-import { ProductsService } from './products.service';
-import IProduct from 'src/interfaces/IProduct';
 import ProductDto from 'src/dto/ProductDto';
+import { ProductsDBService } from './productsDB.service';
+import { Product } from './product.entity';
 
 
 @Controller('products')
 export class ProductController{
-    constructor (private readonly productsService:ProductsService){}
+    constructor (private readonly productsService:ProductsDBService){}
 
 
     @Get()
-    async getProducts():Promise<IProduct[]>{
+    async getProducts():Promise<Product[]>{
         try {
             return await this.productsService.getProducts()
             
@@ -21,7 +21,7 @@ export class ProductController{
     }
 
     @Get(':id')
-    async getProduct(@Param('id') id: string):Promise<IProduct>{
+    async getProduct(@Param('id') id: string):Promise<Product>{
         try {
             return await this.productsService.getProduct(Number(id))
         } catch (error) {
@@ -34,7 +34,7 @@ export class ProductController{
     async newProduct( 
         @Body() newProductDta:ProductDto,
         @Headers('range') range: string
-    ):Promise<IProduct>{
+    ):Promise<Product>{
         try {
             if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
 
@@ -50,7 +50,7 @@ export class ProductController{
         @Param('id') id: string,
         @Body() updateProductDta:ProductDto,
         @Headers('range') range: string
-    ):Promise<IProduct>{
+    ):Promise<Product>{
         try {
             if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
                 if(!updateProductDta || Object.keys(updateProductDta).length === 0)throw new HttpException('No data provided to update', HttpStatus.NO_CONTENT)
@@ -65,7 +65,7 @@ export class ProductController{
     async deleteProduct(
         @Param('id') id: string,
         @Headers('range') range: string
-    ){
+    ):Promise<Product>{
         try {
             if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             return await this.productsService.deleteProduct(Number(id))

@@ -12,7 +12,7 @@ export class User{
 
     @OneToOne(() => Credential, (Credential) => Credential.id)
     @JoinColumn()
-    credentialId:Credential
+    credential:Credential
 
     @Column()
     name: string;
