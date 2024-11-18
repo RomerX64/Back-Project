@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import {v4 as uuid} from 'uuid'
+import { Credential } from "../auth/credential.entity";
+import { Order } from "../orders/order.entity";
 
 @Entity({
     name:'users'
@@ -7,6 +9,10 @@ import {v4 as uuid} from 'uuid'
 export class User{
     @PrimaryGeneratedColumn('uuid')
     id:string = uuid()
+
+    @OneToOne(() => Credential, (Credential) => Credential.id)
+    @JoinColumn()
+    credentialId:Credential
 
     @Column()
     name: string;
@@ -19,11 +25,15 @@ export class User{
 
     @Column({ nullable: true })
     country: string | undefined;
-  
+    
+    @Column({ nullable: true })
+    addres: string | undefined;
+
     @Column({ nullable: true })
     city: string | undefined;
   
-    @Column()
-    credentialID: number;
+    @OneToMany(()=>Order, (Order)=>Order.userId)
+    @JoinColumn()
+    orders:Order[]
 
 }
