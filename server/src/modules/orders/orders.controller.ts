@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import IOrder from 'src/entities/IOrder';
+import IOrder from 'src/interfaces/IOrder';
 import OrderDto from 'src/dto/OrderDto';
 
 

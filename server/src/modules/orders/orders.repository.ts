@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import OrderDto from "src/dto/OrderDto";
-import IOrder from "src/entities/IOrder";
-import IProduct from "src/entities/IProduct";
+import IOrder from "src/interfaces/IOrder";
+import IProduct from "src/interfaces/IProduct";
 
 
 @Injectable()

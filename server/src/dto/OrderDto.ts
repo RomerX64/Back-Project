@@ -1,4 +1,4 @@
-import IProduct from "src/entities/IProduct"
+import IProduct from "src/interfaces/IProduct"
 
 
 interface OrderDto{

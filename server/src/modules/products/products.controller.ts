@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put} from '@nestjs/common';
 import { ProductsService } from './products.service';
-import IProduct from 'src/entities/IProduct';
+import IProduct from 'src/interfaces/IProduct';
 import ProductDto from 'src/dto/ProductDto';
 
 

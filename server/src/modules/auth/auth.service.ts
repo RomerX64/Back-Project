@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { AuthRepository } from "./auth.repository";
 import CredentialDto from "src/dto/CredentialDto";
-import ICredential from "src/entities/ICredential";
+import ICredential from "src/interfaces/ICredential";
 
 
 

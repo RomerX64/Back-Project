@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import ICredential from "src/entities/ICredential";
+import ICredential from "src/interfaces/ICredential";
 import CredentialDto from "src/dto/CredentialDto";
 
 @Controller('auth')

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import UserDto from 'src/dto/UserDto';
-import IUser from 'src/entities/IUser';
+import IUser from 'src/interfaces/IUser';
 import CredentialDto from 'src/dto/CredentialDto';
 
 @Controller('users')

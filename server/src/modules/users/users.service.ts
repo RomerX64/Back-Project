@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from './users.repository';
-import IUser from 'src/entities/IUser';
+import IUser from 'src/interfaces/IUser';
 import UserDto from 'src/dto/UserDto';
 import CredentialDto from 'src/dto/CredentialDto';
 

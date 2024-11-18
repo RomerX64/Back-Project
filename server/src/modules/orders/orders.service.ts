@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OrderRepository } from './orders.repository';
-import IOrder from 'src/entities/IOrder';
+import IOrder from 'src/interfaces/IOrder';
 import OrderDto from 'src/dto/OrderDto';
 
 
