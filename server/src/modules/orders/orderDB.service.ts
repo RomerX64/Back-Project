@@ -40,46 +40,38 @@ export class OrderDBService{
         }
     }
 
-    async newOrder(OrderDetail:OrderDetail, userId:string):Promise<Order>{
-        try {
-            const e:Order|undefined = await this.orderRepository.findOne({where:{detail:{id:OrderDetail.id}}, relations:['detail']})
-            if(e)throw new HttpException('These details are already linked to another order.', HttpStatus.CONFLICT)
-            
-            const user:User|undefined = await this.userRepository.findOne({where:{id:userId}})
-            if(!user) throw new HttpException('User Not Found', HttpStatus.NOT_FOUND)
-            
-            const newOrder ={
-                user,
-                detail:OrderDetail,
-                date:new Date()
-            }
-            const o:Order|undefined = await this.orderRepository.create(newOrder)
-            if(!o)throw new HttpException('Error to make your order', HttpStatus.NOT_IMPLEMENTED)
-            return await this.orderRepository.save(o)
-        } catch (error) {
-            throw error    
-        }
-    }
-
     getAmount(products:Product[]):number{
         let count = 0 
         products.map(p=> count = p.price + count )
         return count
     }
     
-    async newDetail(productsIds:number[], userId:string):Promise<Order>{
-
-        const P:Product[] = await this.productRepository.find({where:{id:In(productsIds)}})
-        if(!P)throw new HttpException('Products not found', HttpStatus.NOT_FOUND)
-
-        const newDetail = {
-            price:this.getAmount(P),
-            products:P
+    async newDetail(productsIds: number[], userId: string): Promise<Order> {
+        try {
+            const user:User = await this.userRepository.findOne({ where: { id: userId } });
+            if (!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    
+            const products: Product[] = await this.productRepository.find({ where: { id: In(productsIds) } });
+            if (products.length === 0) throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
+    
+            const newDetail:OrderDetail = this.detailRepository.create({
+                price: this.getAmount(products),
+                products: products,
+            });
+            
+            const newOrder:Order = this.orderRepository.create({
+                date:new Date(),
+                user,
+                detail:newDetail
+            });
+    
+            if (!newOrder) throw new HttpException('Error creating order', HttpStatus.NOT_IMPLEMENTED);
+    
+            return await this.orderRepository.save(newOrder);
+    
+        } catch (error) {
+            throw error;  
         }
-        const d:OrderDetail = await this.detailRepository.create(newDetail)
-        const OrderDetail:OrderDetail = await this.detailRepository.save(d)
-        return await this.newOrder(OrderDetail, userId)
-
     }
 
     async updateOrder(productsIds:number[],detailId:string):Promise<OrderDetail>{

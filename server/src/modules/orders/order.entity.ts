@@ -17,7 +17,7 @@ export class Order{
     @Column()
     date:Date
 
-    @OneToOne(()=>OrderDetail, (OrderDetail)=>OrderDetail.orderId, {cascade:true})
+    @OneToOne(()=>OrderDetail, (OrderDetail)=>OrderDetail.id, {cascade:true})
     @JoinColumn() 
     detail:OrderDetail
 

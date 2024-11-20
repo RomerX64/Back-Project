@@ -40,6 +40,7 @@ export class ProductsDBService{
         try {
             const e = await this.productsRepository.findOne({where:{name:newProductDta.name}})
             if(e)throw new HttpException('Product already exists', HttpStatus.CONFLICT)
+            if(!newProductDta.imgUrl)newProductDta.imgUrl = 'https://exaple.img/image'
             const p = this.productsRepository.create(newProductDta)
             return await this.productsRepository.save(p)
         } catch (error) {

@@ -21,13 +21,10 @@ export class User{
     address: string;
 
     @Column()
-    phone: string;
+    phone: number;
 
     @Column({ nullable: true })
     country: string | undefined;
-    
-    @Column({ nullable: true })
-    addres: string | undefined;
 
     @Column({ nullable: true })
     city: string | undefined;

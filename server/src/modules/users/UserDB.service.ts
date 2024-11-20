@@ -14,26 +14,20 @@ export class UserDBService{
         @InjectRepository(Credential) private credentialRepository:Repository<Credential>
     ){}
 
-    async newUser(userdta: UserDto, credentialDta: CredentialDto): Promise<User> {
+    async newUser(newUserData: UserDto, credentialDta: CredentialDto): Promise<User> {
         try {
           const existingCredential: Credential | undefined = await this.credentialRepository.findOne({
             where: { email: credentialDta.email },
           });
-          if (existingCredential) {
-            throw new HttpException('User already exists', HttpStatus.CONFLICT);
-          }
+          if (existingCredential)throw new HttpException('User already exists', HttpStatus.CONFLICT)
       
-          const user: User = this.userRepository.create(userdta);
-          if (!user) {
-            throw new HttpException('Error to create your User', HttpStatus.NOT_IMPLEMENTED);
-          }
+          const user: User = this.userRepository.create(newUserData);
+          if (!user)throw new HttpException('Error to create your User', HttpStatus.NOT_IMPLEMENTED)
       
           const credential: Credential = this.credentialRepository.create(credentialDta);
-          if (!credential) {
-            throw new HttpException('Error to create your credential', HttpStatus.NOT_IMPLEMENTED);
-          }
-      
-          await this.userRepository.save(user);
+          if (!credential)throw new HttpException('Error to create your credential', HttpStatus.NOT_IMPLEMENTED)
+          
+            await this.userRepository.save(user);
       
           user.credential = credential;
           await this.credentialRepository.save(credential);

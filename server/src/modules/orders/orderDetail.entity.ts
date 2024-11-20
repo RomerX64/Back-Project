@@ -20,7 +20,7 @@ export class OrderDetail{
 
     @OneToOne(()=>Order, (Order) => Order.id)
     @JoinColumn()
-    orderId:Order
+    order:Order
 
     @ManyToMany(()=>Product,(product) => product.id, {cascade:true})
     @JoinColumn()
