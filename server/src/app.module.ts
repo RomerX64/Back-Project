@@ -6,6 +6,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeOrmConfig from './config/typeorm';
+import { CloudinaryConfig } from './config/cloudinary';
+import { CloudinaryService } from './common/cloudinary.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +21,6 @@ import typeOrmConfig from './config/typeorm';
     UserModule, ProductModule, OrderModule, AuthModule,   
   ],
   controllers: [],
-  providers: [],
+  providers: [CloudinaryConfig, CloudinaryService],
 })
 export class AppModule {}

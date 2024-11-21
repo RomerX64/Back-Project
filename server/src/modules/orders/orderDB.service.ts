@@ -42,7 +42,7 @@ export class OrderDBService{
 
     getAmount(products:Product[]):number{
         let count = 0 
-        products.map(p=> count = p.price + count )
+        products.map(p=> count = count + Number(p.price) )
         return count
     }
     
@@ -50,25 +50,35 @@ export class OrderDBService{
         try {
             const user:User = await this.userRepository.findOne({ where: { id: userId } });
             if (!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    
-            const products: Product[] = await this.productRepository.find({ where: { id: In(productsIds) } });
+            console.log(user)
+
+            const productIdsAsNumbers = productsIds.map(id => Number(id));
+            const products:Product[] = await this.productRepository.find({where:{id: In(productIdsAsNumbers)}})
             if (products.length === 0) throw new HttpException('Products not found', HttpStatus.NOT_FOUND);
-    
-            const newDetail:OrderDetail = this.detailRepository.create({
-                price: this.getAmount(products),
-                products: products,
+            const arrProducts: Product[] = products.map(p => {
+                p.price = Number(p.price); 
+                return p; 
             });
-            
+            console.log(arrProducts)
+
+            const newDetail:OrderDetail = this.detailRepository.create({
+                price: this.getAmount(arrProducts),
+                products: arrProducts,
+            });
+            console.log(newDetail)
+            await this.detailRepository.save(newDetail)
+            console.log('Detail save');
+
             const newOrder:Order = this.orderRepository.create({
                 date:new Date(),
-                user,
+                user:user,
                 detail:newDetail
-            });
-    
+            })
+            console.log(newOrder)
             if (!newOrder) throw new HttpException('Error creating order', HttpStatus.NOT_IMPLEMENTED);
-    
-            return await this.orderRepository.save(newOrder);
-    
+            await this.orderRepository.save(newOrder);
+            console.log('Order save');
+            return newOrder
         } catch (error) {
             throw error;  
         }

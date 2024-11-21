@@ -16,28 +16,22 @@ export class UserDBService{
 
     async newUser(newUserData: UserDto, credentialDta: CredentialDto): Promise<User> {
         try {
-          const existingCredential: Credential | undefined = await this.credentialRepository.findOne({
-            where: { email: credentialDta.email },
-          });
-          if (existingCredential)throw new HttpException('User already exists', HttpStatus.CONFLICT)
-      
-          const user: User = this.userRepository.create(newUserData);
-          if (!user)throw new HttpException('Error to create your User', HttpStatus.NOT_IMPLEMENTED)
-      
-          const credential: Credential = this.credentialRepository.create(credentialDta);
-          if (!credential)throw new HttpException('Error to create your credential', HttpStatus.NOT_IMPLEMENTED)
-          
-            await this.userRepository.save(user);
-      
-          user.credential = credential;
-          await this.credentialRepository.save(credential);
-      
+            const Ce = await this.credentialRepository.findOne({where:{email:credentialDta.email}})
+            if(Ce)throw new HttpException('This mail already exist', HttpStatus.CONFLICT)
+            
+            const C = await this.credentialRepository.create(credentialDta)
+            await this.credentialRepository.save(C)
+            const U = await this.userRepository.create(newUserData)
+         
+            U.credential = C
+            await this.userRepository.save(U)
+            console.log(U)
+            return U
 
-          return user; 
         } catch (error) {
-          throw error;
+            throw error
         }
-      }
+    }
 
     async getUser(userId:string, credentialDta:CredentialDto):Promise<User>{
         try {

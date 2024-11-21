@@ -1,12 +1,12 @@
 
 
 interface IProduct {
-    id:number
     name: string
     description: string
     price: number
-    stock: boolean
+    stock: number
     imgUrl: string
+    categories: number[]
 }
 
 export default IProduct

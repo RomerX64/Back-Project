@@ -40,15 +40,17 @@ export class OrdersController {
 
     @Post()
     async newDetail(
-        @Body() productsIds:number[],
+        @Body() productsIds:any,
         @Headers('token') token:string,
         @Headers('userId') userId:string,
     ):Promise<Order>{
         try {
+            
             if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)
+            if(!productsIds || productsIds.productsIds.length === 0) throw new HttpException('No product IDs provided', HttpStatus.NO_CONTENT)
             
-            return await this.ordersService.newDetail(productsIds, userId)
+            return await this.ordersService.newDetail(productsIds.productsIds, userId)
     
         } catch (error) {
             if(error instanceof HttpException)throw error
@@ -73,7 +75,7 @@ export class OrdersController {
             return await this.ordersService.updateOrder(productsIds, detailId)
         } catch (error) {
             if(error instanceof HttpException)throw error
-            throw new HttpException(error, HttpStatus.CONFLICT)
+            throw error
         }
     }
 

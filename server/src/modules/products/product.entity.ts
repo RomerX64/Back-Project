@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from "./categorys.entity";
 import { OrderDetail } from "../orders/orderDetail.entity";
 
@@ -25,9 +25,10 @@ export class Product{
     @Column()
     imgUrl:string
 
-    @ManyToMany(()=>Category,(Category)=> Category.id)
+    @ManyToMany(()=>Category,(Category)=> Category.products)
+    @JoinTable()
     categories:Category[]
 
-    @ManyToMany(()=>OrderDetail,(OrderDetail) => OrderDetail.id)
+    @ManyToMany(()=>OrderDetail,(OrderDetail) => OrderDetail.products)
     orders:OrderDetail[]
 }

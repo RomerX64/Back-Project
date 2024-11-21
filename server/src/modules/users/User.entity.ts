@@ -10,8 +10,8 @@ export class User{
     @PrimaryGeneratedColumn('uuid')
     id:string = uuid()
 
-    @OneToOne(() => Credential, (Credential) => Credential.id)
-    @JoinColumn()
+    @OneToOne(() => Credential, (Credential) => Credential.user)
+    @JoinColumn({ name: 'credentialId' })
     credential:Credential
 
     @Column()

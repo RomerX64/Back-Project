@@ -10,15 +10,14 @@ export class Order{
     @PrimaryGeneratedColumn()
     id:number
 
-    @ManyToOne(() => User, (User) => User.id)
-    @JoinColumn()
+    @ManyToOne(() => User, (User) => User.orders)
     user:User
     
     @Column()
     date:Date
 
-    @OneToOne(()=>OrderDetail, (OrderDetail)=>OrderDetail.id, {cascade:true})
-    @JoinColumn() 
+    @OneToOne(()=>OrderDetail, (OrderDetail)=> OrderDetail.order, {cascade:true})
+    @JoinColumn({ name: 'detailId' }) 
     detail:OrderDetail
 
 }
