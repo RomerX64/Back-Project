@@ -21,19 +21,15 @@ export class OrderDBService{
 
     async getOrder(orderId:number,userId:string):Promise<Order>{
         try {
-            console.log(orderId)
-            console.log(typeof orderId)
-            console.log(userId)
-            console.log(typeof userId)
 
             const user:User = await this.userRepository.findOne({ where: { id: userId }, relations: ['orders'] });
             if (!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-            console.log(user)
-            const o:Order|undefined = await this.orderRepository.findOne({where:{id:orderId}, relations:['user']})
+
+            const o:Order|undefined = await this.orderRepository.findOne({where:{id:orderId}, relations:['user', 'detail']})
             if(!o)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
-                console.log(o.user.id)
+           
             if(o.user.id !== userId)throw new HttpException('This order is not you propety', HttpStatus.NOT_ACCEPTABLE)
-            console.log(o)
+  
 
             return o
             } catch (error) {
