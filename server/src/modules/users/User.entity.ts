@@ -11,7 +11,7 @@ export class User{
     id:string = uuid()
 
     @OneToOne(() => Credential, (Credential) => Credential.user)
-    @JoinColumn({ name: 'credential_Id' })
+    @JoinColumn()
     credential:Credential
 
     @Column()
@@ -30,7 +30,7 @@ export class User{
     city: string | undefined;
   
     @OneToMany(()=>Order, (Order)=>Order.user)
-    @JoinColumn({name:'orders_Id'})
+    @JoinColumn()
     orders:Order[]
 
 }

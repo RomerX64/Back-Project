@@ -16,7 +16,7 @@ export class Credential{
     password:string
 
     @OneToOne(() => User, (User)=> User.credential, {cascade:true})
-    @JoinColumn({ name: 'user_Id' })
+    @JoinColumn()
     user:User
     
 

@@ -26,7 +26,7 @@ export class Product{
     imgUrl:string
 
     @ManyToMany(()=>Category,(Category)=> Category.products)
-    @JoinTable({name:'category'})
+    @JoinTable()
     categories:Category[]
 
     @ManyToMany(()=>OrderDetail,(OrderDetail) => OrderDetail.products)
