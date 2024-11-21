@@ -11,6 +11,7 @@ export class Order{
     id:number
 
     @ManyToOne(() => User, (User) => User.orders)
+    @JoinColumn()
     user:User
     
     @Column()

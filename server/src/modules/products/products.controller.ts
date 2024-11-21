@@ -45,6 +45,21 @@ export class ProductController{
         }
     }
 
+    @Post('varios')
+    async newProducts(
+        @Body() newProdutctsDta:ProductDto[],
+        @Headers('range') range: string
+    ):Promise<Product[]>{
+        try {
+            if(range !== 'admin' && range !== 'seller')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
+            if(!newProdutctsDta || newProdutctsDta.length === 0)throw new HttpException('No data provided', HttpStatus.NO_CONTENT)
+            return await this.productsService.newProducts(newProdutctsDta)
+        } catch (error) {
+            if(error instanceof HttpException)throw error
+            throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST)
+        }
+    }
+
     @Put(':id')
     async updateProduct(
         @Param('id') id: string,

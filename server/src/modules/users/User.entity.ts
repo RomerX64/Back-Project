@@ -21,7 +21,7 @@ export class User{
     address: string;
 
     @Column()
-    phone: number;
+    phone: string;
 
     @Column({ nullable: true })
     country: string | undefined;
@@ -30,7 +30,6 @@ export class User{
     city: string | undefined;
   
     @OneToMany(()=>Order, (Order)=>Order.user)
-    @JoinColumn()
     orders:Order[]
 
 }

@@ -48,6 +48,39 @@ export class ProductsDBService{
         }
     }
 
+    async newProducts(newProductsDta:ProductDto[]):Promise<Product[]>{
+        try {
+
+            const fixed:ProductDto[] = newProductsDta.map(
+                (p)=>{
+                    if(!p.imgUrl)p.imgUrl = 'https://exaple.img/image'
+                    return p
+                } 
+                )
+            
+                const e: Product[] | undefined = await this.productsRepository.find({
+                    where: {
+                        name: In(newProductsDta.map((product) => product.name)) // Extraer los nombres de los productos
+                    }
+                });
+
+                if (e.length > 0) {
+                    throw new HttpException({
+                        statusCode: HttpStatus.CONFLICT, 
+                        message: 'Productos ya existentes',
+                        existingProducts: e,
+                    }, HttpStatus.CONFLICT);
+                }            return await Promise.all(
+                fixed.map(async (product) => {
+                    return await this.productsRepository.save(product);
+                })
+            );
+           
+        } catch (error) {
+            throw error
+        }
+    }
+
     async updateProduct(id:number, updateProductDta:ProductDto):Promise<Product>{
         try {
             const p = await this.productsRepository.findOne({where:{id}})

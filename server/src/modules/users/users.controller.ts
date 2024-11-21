@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import UserDto from 'src/dto/UserDto';
 import CredentialDto from 'src/dto/CredentialDto';
 import { UserDBService } from './UserDB.service';
@@ -8,13 +8,11 @@ export class UsersController {
   constructor(private readonly usersService: UserDBService) {
   }
 
-  @HttpCode(200)
   @Get()
   async getusers(){
     return await this.usersService.getUsers()
   }
 
-  @HttpCode(200)
   @Get(':userId')
   async getUser(
     @Param('userId') userId: string,
@@ -29,7 +27,6 @@ export class UsersController {
     }
   }
 
-  @HttpCode(201)
   @Post()
   async NewUser(
     @Body() newUserData:UserDto,

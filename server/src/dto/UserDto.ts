@@ -5,7 +5,7 @@ interface UserDto{
     name: string,     
     password: string,       
     address: string,
-    phone: number,
+    phone: string,
     country?: string | undefined,
     city?: string | undefined
 }
