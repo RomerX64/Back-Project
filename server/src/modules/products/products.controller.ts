@@ -23,6 +23,7 @@ export class ProductController{
     @Get(':id')
     async getProduct(@Param('id') id: string):Promise<Product>{
         try {
+            console.log(id)
             return await this.productsService.getProduct(Number(id))
         } catch (error) {
             if(error instanceof HttpException)throw error

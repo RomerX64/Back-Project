@@ -4,6 +4,7 @@ import { In, Repository } from "typeorm";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import ProductDto from "src/dto/ProductDto";
 import { Category } from "./categorys.entity";
+import CategoryProductDto from "src/dto/CategoryProductDto";
 
 
 @Injectable()
@@ -15,10 +16,11 @@ export class ProductsDBService{
 
     async getProduct(id:number):Promise<Product>{
         try {
+            console.log(id)
             const p = await this.productsRepository.findOne({
-                where:{id},
-                relations: ['category']
+                where:{id}
             })
+            console.log(p)
             if(!p)throw new HttpException('Product not found', HttpStatus.NOT_FOUND)
             return p
         } catch (error) {
@@ -41,6 +43,8 @@ export class ProductsDBService{
             const e = await this.productsRepository.findOne({where:{name:newProductDta.name}})
             if(e)throw new HttpException('Product already exists', HttpStatus.CONFLICT)
             if(!newProductDta.imgUrl)newProductDta.imgUrl = 'https://exaple.img/image'
+
+
             const p = this.productsRepository.create(newProductDta)
             return await this.productsRepository.save(p)
         } catch (error) {
@@ -52,29 +56,25 @@ export class ProductsDBService{
         try {
 
             const fixed:ProductDto[] = newProductsDta.map(
-                (p)=>{
-                    if(!p.imgUrl)p.imgUrl = 'https://exaple.img/image'
-                    return p
-                } 
-                )
+            (p)=>{
+                if(!p.imgUrl)p.imgUrl = 'https://exaple.img/image'
+                return p
+            })
             
-                const e: Product[] | undefined = await this.productsRepository.find({
-                    where: {
-                        name: In(newProductsDta.map((product) => product.name)) // Extraer los nombres de los productos
-                    }
-                });
 
-                if (e.length > 0) {
-                    throw new HttpException({
-                        statusCode: HttpStatus.CONFLICT, 
-                        message: 'Productos ya existentes',
-                        existingProducts: e,
-                    }, HttpStatus.CONFLICT);
-                }            return await Promise.all(
+            const e: Product[] | undefined = await this.productsRepository.find({where: { name: In(newProductsDta.map((product) => product.name))}});
+            if (e.length > 0) {
+                throw new HttpException({
+                    statusCode: HttpStatus.CONFLICT, 
+                    message: 'Productos ya existentes',
+                    existingProducts: e,
+                }, HttpStatus.CONFLICT);
+            }            
+                
+            return await Promise.all(
                 fixed.map(async (product) => {
-                    return await this.productsRepository.save(product);
-                })
-            );
+                return await this.productsRepository.save(product);
+            }));
            
         } catch (error) {
             throw error
@@ -112,22 +112,63 @@ export class ProductsDBService{
             if(c)throw new HttpException('Category already exists', HttpStatus.CONFLICT)
             const category = this.categoryRepository.create({name})
             return await this.categoryRepository.save(category)
+
+
         } catch (error) {
             if(error instanceof HttpException)throw error
             throw new HttpException(error, HttpStatus.CONFLICT)
         }
     }
 
-    async selectCategrys(ids:number[], productId:number):Promise<Product>{
+    async newCategorys(names:string[]):Promise<Category[]>{
         try {
-            const product:Product|undefined = await this.productsRepository.findOne({where:{id:productId}})
-            if(!product)throw new HttpException('Product not found', HttpStatus.NOT_FOUND)
+            const e: Category[]|undefined = await this.categoryRepository.find({where:{name:In(names)}})
+            if (e.length > 0) {
+                throw new HttpException({
+                    statusCode: HttpStatus.CONFLICT, 
+                    message: 'Productos ya existentes',
+                    existingProducts: e,
+                }, HttpStatus.CONFLICT);
+            }
+            const newCategories = names.map(name => {
+                const category = new Category();
+                category.name = name;  
+                return category;
+            });
+    
+            return await this.categoryRepository.save(newCategories);        
+            } catch (error) {
+            throw error
+        }
+    }
 
-            const categorys:Category[]|undefined = await this.categoryRepository.find({where:{id:In(ids)}})
-            if(!categorys)throw new HttpException('Categorys not found',HttpStatus.NOT_FOUND)
-            const arr = [... product.categories, ...categorys]
-            product.categories = arr.filter((numero, index, self) => self.indexOf(numero) === self.lastIndexOf(numero))
-            return await this.productsRepository.save(product)
+    async getCategories():Promise<Category[]>{
+        try {
+            return await this.categoryRepository.find()
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async selectCategrys(arrays:CategoryProductDto):Promise<Product[]>{
+        try {
+            const {products, categories} = arrays
+
+            const c = await this.categoryRepository.find({where:{id:In(categories)}})
+            if(!c)throw new HttpException('Categories not found', HttpStatus.NOT_FOUND)
+
+            const p:Product[] = await this.productsRepository.find({where:{id:In(products)}, relations:['categories']})
+            if(!p)throw new HttpException('Products not found', HttpStatus.NOT_FOUND)
+
+
+            const updatedProducts = p.map((product) => {
+                product.categories = [...product.categories , ... c]
+                console.log(product)
+                console.log(product.categories)
+                return product;
+            });
+
+            return await this.productsRepository.save(updatedProducts);
         } catch (error) {
             throw error
         }
