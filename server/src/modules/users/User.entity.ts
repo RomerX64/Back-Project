@@ -11,7 +11,7 @@ export class User{
     id:string = uuid()
 
     @OneToOne(() => Credential, (Credential) => Credential.user)
-    @JoinColumn({ name: 'credentialId' })
+    @JoinColumn({ name: 'credential_Id' })
     credential:Credential
 
     @Column()
@@ -29,8 +29,8 @@ export class User{
     @Column({ nullable: true })
     city: string | undefined;
   
-    @OneToMany(()=>Order, (Order)=>Order.user, {cascade:true})
-    @JoinColumn()
+    @OneToMany(()=>Order, (Order)=>Order.user)
+    @JoinColumn({name:'orders_Id'})
     orders:Order[]
 
 }

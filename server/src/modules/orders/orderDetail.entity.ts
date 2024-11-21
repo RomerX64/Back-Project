@@ -22,6 +22,6 @@ export class OrderDetail{
     order:Order
 
     @ManyToMany(()=>Product,(product) => product.orders, { cascade: true})
-    @JoinTable()
+    @JoinTable({name:'products'})
     products:Product[]
 }
