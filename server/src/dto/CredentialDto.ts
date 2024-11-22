@@ -1,7 +1,14 @@
+import { IsEmail, IsNotEmpty, IsString } from "class-validator"
 
 
-interface CredentialDto{
-    email:string,
+class CredentialDto{
+    @IsNotEmpty()
+    @IsEmail()
+    @IsString()
+    email:string
+
+    @IsNotEmpty()
+    @IsString()
     password:string
 }
 export default CredentialDto

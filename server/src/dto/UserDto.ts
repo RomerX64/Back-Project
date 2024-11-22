@@ -1,12 +1,27 @@
+import { IsString, IsNotEmpty, IsEmail } from "class-validator"
 
+class UserDto{
+    @IsNotEmpty()
+    @IsString()
+    @IsEmail()
+    email: string
 
-interface UserDto{
-    email: string, 
-    name: string,     
-    password: string,       
-    address: string,
-    phone: string,
-    country?: string | undefined,
+    @IsNotEmpty()
+    @IsString()
+    name: string  
+    @IsNotEmpty()
+    @IsString()    
+    password: string  
+    @IsNotEmpty()
+    @IsString()    
+    address: string
+
+    @IsNotEmpty()
+    @IsString()    
+    phone: string
+
+    country?: string | undefined
+
     city?: string | undefined
 }
 

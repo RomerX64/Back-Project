@@ -1,6 +1,12 @@
+import { IsArray, IsNotEmpty } from "class-validator"
 
-interface CategoryProductDto {
+class CategoryProductDto {
+    @IsArray()
+    @IsNotEmpty()
     categories:number[]
+
+    @IsArray()
+    @IsNotEmpty()
     products:number[]
 }
 export default CategoryProductDto

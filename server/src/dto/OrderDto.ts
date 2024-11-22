@@ -1,7 +1,11 @@
+import { IsArray, IsNotEmpty } from "class-validator"
 import IProduct from "src/interfaces/IProduct"
 
 
-interface OrderDto{
+class OrderDto{
+    @IsNotEmpty()
+    @IsArray()
     products: IProduct[]
 }
+
 export default OrderDto

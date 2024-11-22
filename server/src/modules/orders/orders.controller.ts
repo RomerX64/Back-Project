@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { OrderDBService } from './orderDB.service';
 import { Order } from './order.entity';
 import { OrderDetail } from './orderDetail.entity';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 
 
@@ -22,13 +23,12 @@ export class OrdersController {
     }
 
     @Get(':orderId')
+    @UseGuards(AuthGuard)
     async getOrder(
         @Param('orderId') orderId:string,
-        @Headers('token') token:string,
         @Headers('userId') userId:string,
     ):Promise<Order>{
         try {
-            if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)    
 
             return await this.ordersService.getOrder(Number(orderId), userId)
@@ -39,18 +39,17 @@ export class OrdersController {
     }
 
     @Post()
+    @UseGuards(AuthGuard)
     async newDetail(
-        @Body() productsIds:any,
-        @Headers('token') token:string,
+        @Body() productsIds:number[],
         @Headers('userId') userId:string,
     ):Promise<Order>{
         try {
             
-            if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)
-            if(!productsIds || productsIds.productsIds.length === 0) throw new HttpException('No product IDs provided', HttpStatus.NO_CONTENT)
+            if(!productsIds || productsIds.length === 0) throw new HttpException('No product IDs provided', HttpStatus.NO_CONTENT)
             
-            return await this.ordersService.newDetail(productsIds.productsIds, userId)
+            return await this.ordersService.newDetail(productsIds, userId)
     
         } catch (error) {
             if(error instanceof HttpException)throw error
@@ -59,14 +58,13 @@ export class OrdersController {
     }
 
     @Put(':detailId')
+    @UseGuards(AuthGuard)
     async updateOrder(
-        @Param('detailId') detailId:string,
+        @Param('detailId', ParseUUIDPipe) detailId:string,
         @Body() productsIds:number[],
-        @Headers('token') token:string,
         @Headers('userId') userId:string,
     ):Promise<OrderDetail>{
         try {
-            if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)
             if(!detailId)throw new HttpException('You must select only one order', HttpStatus.BAD_REQUEST)
             if(!productsIds || Object.keys(productsIds).length === 0)throw new HttpException('No data provided to update', HttpStatus.NO_CONTENT)
@@ -80,16 +78,15 @@ export class OrdersController {
     }
 
     @Delete(':orderId')
+    @UseGuards(AuthGuard)
     async deleteOrder(
         @Param('orderId') orderId:string,
-        @Headers('token') token:string,
         @Headers('userId') userId:string,
         @Headers('range') range:string,
         @Body() password:string
 
     ):Promise<Order>{
         try {
-            if(!token)throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)
             if(!orderId)throw new HttpException('You must select only one order', HttpStatus.BAD_REQUEST)
             

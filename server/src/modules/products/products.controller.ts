@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, Post, Put} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards} from '@nestjs/common';
 import ProductDto from 'src/dto/ProductDto';
 import { ProductsDBService } from './productsDB.service';
 import { Product } from './product.entity';
+import { RangeGuard } from 'src/guards/range.guard';
 
 
 @Controller('products')
@@ -32,12 +33,11 @@ export class ProductController{
     }
 
     @Post()
+    @UseGuards(RangeGuard)
     async newProduct( 
         @Body() newProductDta:ProductDto,
-        @Headers('range') range: string
     ):Promise<Product>{
         try {
-            if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
 
             return await this.productsService.newProduct(newProductDta)
         } catch (error) {
@@ -47,12 +47,11 @@ export class ProductController{
     }
 
     @Post('varios')
+    @UseGuards(RangeGuard)
     async newProducts(
         @Body() newProdutctsDta:ProductDto[],
-        @Headers('range') range: string
     ):Promise<Product[]>{
         try {
-            if(range !== 'admin' && range !== 'seller')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             if(!newProdutctsDta || newProdutctsDta.length === 0)throw new HttpException('No data provided', HttpStatus.NO_CONTENT)
             return await this.productsService.newProducts(newProdutctsDta)
         } catch (error) {
@@ -62,13 +61,12 @@ export class ProductController{
     }
 
     @Put(':id')
+    @UseGuards(RangeGuard)
     async updateProduct(
         @Param('id') id: string,
         @Body() updateProductDta:ProductDto,
-        @Headers('range') range: string
     ):Promise<Product>{
         try {
-            if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
                 if(!updateProductDta || Object.keys(updateProductDta).length === 0)throw new HttpException('No data provided to update', HttpStatus.NO_CONTENT)
                 return await this.productsService.updateProduct(Number(id), updateProductDta)
         } catch (error) {
@@ -78,12 +76,11 @@ export class ProductController{
     }
 
     @Delete(':id')
+    @UseGuards(RangeGuard)
     async deleteProduct(
         @Param('id') id: string,
-        @Headers('range') range: string
     ):Promise<Product>{
         try {
-            if(range !== 'seller' && range !== 'admin')throw new HttpException('You do not have permission', HttpStatus.FORBIDDEN)
             return await this.productsService.deleteProduct(Number(id))
         } catch (error) {
             if(error instanceof HttpException)throw error

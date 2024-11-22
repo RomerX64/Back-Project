@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Headers, HttpException, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import ICredential from "src/interfaces/ICredential";
 import CredentialDto from "src/dto/CredentialDto";
+import { IsAdminGuard } from "src/guards/isAdmin.guard";
 
 @Controller('auth')
 
@@ -11,14 +12,11 @@ export class AuthController{
     ){}
 
     @Get(':userId')
+    @UseGuards(IsAdminGuard)
     async getEmailByUserId(
         @Param('userId') userId:string,
-        @Headers('range') range:string,
-        @Headers('password') password:string
     ):Promise<string>{
         try {
-            if(password !== 'admin')throw new HttpException('you do not have permission', HttpStatus.UNAUTHORIZED)
-            if(range !== 'admin')throw new HttpException('you do not have permission', HttpStatus.UNAUTHORIZED)
             return this.authService.getEmailByUserId(Number(userId))
         } catch (error) {
          if(error instanceof HttpException)throw error
