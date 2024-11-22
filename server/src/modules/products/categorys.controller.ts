@@ -2,11 +2,11 @@ import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Use
 import { Category } from "./categorys.entity";
 import { ProductsDBService } from "./productsDB.service";
 import { Product } from "./product.entity";
-import CategoryProductDto from "src/dto/CategoryProductDto";
-import { RolesGuard } from "src/guards/roles.guard";
-import { Roles } from "src/decorators/roles.decorator";
+import CategoryProductDto from "../../dto/CategoryProductDto";
+import { RolesGuard } from "../../guards/roles.guard";
+import { Roles } from "../../decorators/roles.decorator";
 import { Role } from "../auth/roles.enum";
-import { AuthGuard } from "src/guards/auth.guard";
+import { AuthGuard } from "../../guards/auth.guard";
 
 
 @Controller('categories')

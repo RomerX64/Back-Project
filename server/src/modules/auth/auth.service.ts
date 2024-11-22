@@ -1,10 +1,10 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import UserDto from "src/dto/UserDto";
+import UserDto from "../../dto/UserDto";
 import { Repository } from "typeorm";
 import { User } from "../users/User.entity";
 import { Credential } from "./credential.entity";
 import * as bcrypt from "bcrypt"
-import CredentialDto from "src/dto/CredentialDto";
+import CredentialDto from "../../dto/CredentialDto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
 import { Role } from "./roles.enum";

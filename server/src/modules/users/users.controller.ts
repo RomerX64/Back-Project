@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Put, UseGuards } from '@nestjs/common';
-import UserDto from 'src/dto/UserDto';
-import CredentialDto from 'src/dto/CredentialDto';
+import UserDto from '../../dto/UserDto';
+import CredentialDto from '../../dto/CredentialDto';
 import { UserDBService } from './UserDB.service';
 import { User } from './User.entity';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UserDBService) {

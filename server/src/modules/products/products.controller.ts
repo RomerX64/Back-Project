@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards} from '@nestjs/common';
-import ProductDto from 'src/dto/ProductDto';
+import ProductDto from '../../dto/ProductDto';
 import { ProductsDBService } from './productsDB.service';
 import { Product } from './product.entity';
-import { RolesGuard } from 'src/guards/roles.guard';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 
 
 @Controller('products')

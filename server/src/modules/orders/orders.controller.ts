@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Para
 import { OrderDBService } from './orderDB.service';
 import { Order } from './order.entity';
 import { OrderDetail } from './orderDetail.entity';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../../guards/auth.guard';
 
 
 
