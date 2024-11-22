@@ -23,6 +23,9 @@ export class User{
     @Column()
     phone: string;
 
+    @Column({default:false})
+    isAdmin: boolean
+
     @Column({ nullable: true })
     country: string | undefined;
 

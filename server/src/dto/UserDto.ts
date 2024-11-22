@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail, MinLength } from "class-validator"
+import { IsString, IsNotEmpty, IsEmail, MinLength, IsEmpty } from "class-validator"
 
 class UserDto{
     @IsNotEmpty()
@@ -22,6 +22,9 @@ class UserDto{
     @IsNotEmpty()
     @IsString()    
     phone: string
+
+    @IsEmpty()
+    isAdmin:boolean
 
     country?: string | undefined
 

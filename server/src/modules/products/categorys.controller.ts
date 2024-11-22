@@ -1,8 +1,12 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { Category } from "./categorys.entity";
 import { ProductsDBService } from "./productsDB.service";
 import { Product } from "./product.entity";
 import CategoryProductDto from "src/dto/CategoryProductDto";
+import { RolesGuard } from "src/guards/roles.guard";
+import { Roles } from "src/decorators/roles.decorator";
+import { Role } from "../auth/roles.enum";
+import { AuthGuard } from "src/guards/auth.guard";
 
 
 @Controller('categories')
@@ -23,6 +27,8 @@ export class CategoryController {
     }
 
     @Post()
+    @Roles(Role.Admin)
+    @UseGuards(AuthGuard, RolesGuard)
     async createCategories(
         @Body() names:string[]
     ):Promise<Category[]>{
@@ -36,6 +42,8 @@ export class CategoryController {
 
 
     @Post(':name')
+    @Roles(Role.Admin)
+    @UseGuards(AuthGuard, RolesGuard)
     async createCategory(
         @Param('name') name: string
     ):Promise<Category>{
@@ -50,6 +58,8 @@ export class CategoryController {
 
 
     @Put()
+    @Roles(Role.Admin)
+    @UseGuards(AuthGuard, RolesGuard)
     async selectCategrys(
         @Body() arrays:CategoryProductDto
     ):Promise<Product[]>{

@@ -40,7 +40,8 @@ export class OrderDBService{
     async getOrders(userId:string):Promise<Order[]>{
         try {
             const O:Order[]|undefined = await this.orderRepository.find({where:{user:{ id: userId}}})
-            if(!O)throw new HttpException('Orers not found', HttpStatus.NOT_FOUND)
+            if(!O)throw new HttpException('Orders not found', HttpStatus.NOT_FOUND)
+            if(O.length === 0)throw new HttpException('You not have a orders', HttpStatus.NO_CONTENT)
             return O
         } catch (error) {
             throw error
@@ -55,7 +56,7 @@ export class OrderDBService{
     
     async newDetail(productsIds: number[], userId: string): Promise<Order> {
         try {
-            const user:User = await this.userRepository.findOne({ where: { id: userId } });
+            const user:User = await this.userRepository.findOne({ where: { id: userId }, relations:['orders'] });
             if (!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 
             const productIdsAsNumbers = productsIds.map(id => Number(id));
@@ -105,12 +106,10 @@ export class OrderDBService{
         }
     }
 
-    async deleteOrder(userId:string, orderId:number, password:string, range:string):Promise<Order>{
+    async deleteOrder(userId:string, orderId:number):Promise<Order>{
         try {
             const o:Order|undefined = await this.orderRepository.findOne({where:{id:orderId}})
             if(!o)throw new HttpException('Order not found', HttpStatus.NOT_FOUND)
-            if(range !== 'admin' && o.user.id !== userId)throw new HttpException('This order is not your propety', HttpStatus.NOT_ACCEPTABLE)
-            if(range !== 'admin' && o.user.credential.password !== password )throw new HttpException('Invalid credential',HttpStatus.UNAUTHORIZED)
             return await this.orderRepository.remove(o)
         } catch (error) {
             throw error

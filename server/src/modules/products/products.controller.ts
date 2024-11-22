@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import ProductDto from 'src/dto/ProductDto';
 import { ProductsDBService } from './productsDB.service';
 import { Product } from './product.entity';
-import { RangeGuard } from 'src/guards/range.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 
 @Controller('products')
@@ -33,7 +34,7 @@ export class ProductController{
     }
 
     @Post()
-    @UseGuards(RangeGuard)
+    @UseGuards(AuthGuard, RolesGuard)
     async newProduct( 
         @Body() newProductDta:ProductDto,
     ):Promise<Product>{
@@ -47,7 +48,7 @@ export class ProductController{
     }
 
     @Post('varios')
-    @UseGuards(RangeGuard)
+    @UseGuards(AuthGuard, RolesGuard)
     async newProducts(
         @Body() newProdutctsDta:ProductDto[],
     ):Promise<Product[]>{
@@ -61,7 +62,7 @@ export class ProductController{
     }
 
     @Put(':id')
-    @UseGuards(RangeGuard)
+    @UseGuards(AuthGuard, RolesGuard)
     async updateProduct(
         @Param('id') id: string,
         @Body() updateProductDta:ProductDto,
@@ -76,7 +77,7 @@ export class ProductController{
     }
 
     @Delete(':id')
-    @UseGuards(RangeGuard)
+    @UseGuards(AuthGuard, RolesGuard)
     async deleteProduct(
         @Param('id') id: string,
     ):Promise<Product>{

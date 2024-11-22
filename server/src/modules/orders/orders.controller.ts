@@ -82,15 +82,12 @@ export class OrdersController {
     async deleteOrder(
         @Param('orderId') orderId:string,
         @Headers('userId') userId:string,
-        @Headers('range') range:string,
-        @Body() password:string
-
     ):Promise<Order>{
         try {
             if(!userId)throw new HttpException('You did not loged', HttpStatus.BAD_REQUEST)
             if(!orderId)throw new HttpException('You must select only one order', HttpStatus.BAD_REQUEST)
             
-            return await this.ordersService.deleteOrder(userId, Number(orderId), password, range)
+            return await this.ordersService.deleteOrder(userId, Number(orderId))
 
         } catch (error) {
             if(error instanceof HttpException)throw error

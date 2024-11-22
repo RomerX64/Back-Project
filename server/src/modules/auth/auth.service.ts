@@ -7,6 +7,7 @@ import * as bcrypt from "bcrypt"
 import CredentialDto from "src/dto/CredentialDto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
+import { Role } from "./roles.enum";
 
 
 @Injectable()
@@ -54,7 +55,8 @@ export class AuthService {
             const userPayload ={
                 sub:user.id,
                 id:user.id,
-                email:credential.email
+                email:credential.email,
+                roles: [user.isAdmin? Role.Admin : Role.User]
             }
                 
             const token = this.jwtService.sign(userPayload)
