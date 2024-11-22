@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsNotEmpty } from "class-validator"
+import { IsString, IsNumber, IsNotEmpty, MaxLength } from "class-validator"
 
 class ProductDto{
     @IsNotEmpty()
@@ -7,6 +7,7 @@ class ProductDto{
 
     @IsNotEmpty()
     @IsString()
+    @MaxLength(50)
     description: string
 
     @IsNotEmpty()

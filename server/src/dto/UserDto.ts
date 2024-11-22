@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEmail } from "class-validator"
+import { IsString, IsNotEmpty, IsEmail, MinLength } from "class-validator"
 
 class UserDto{
     @IsNotEmpty()
@@ -9,9 +9,12 @@ class UserDto{
     @IsNotEmpty()
     @IsString()
     name: string  
+
     @IsNotEmpty()
     @IsString()    
+    @MinLength(5)
     password: string  
+
     @IsNotEmpty()
     @IsString()    
     address: string
@@ -20,8 +23,10 @@ class UserDto{
     @IsString()    
     phone: string
 
+    @IsString()
     country?: string | undefined
 
+    @IsString()
     city?: string | undefined
 }
 

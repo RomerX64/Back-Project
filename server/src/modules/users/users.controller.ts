@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Put, UseGuards } from '@nestjs/common';
 import UserDto from 'src/dto/UserDto';
 import CredentialDto from 'src/dto/CredentialDto';
 import { UserDBService } from './UserDB.service';
@@ -12,34 +12,6 @@ export class UsersController {
   @Get()
   async getusers(){
     return await this.usersService.getUsers()
-  }
-
-  @Get(':userId')
-  async getUser(
-    @Param('userId', ParseUUIDPipe) userId: string,
-    @Headers('email') email: string,
-    @Headers('password') password: string
-):Promise<User>{
-    try {
-      return await this.usersService.getUser(userId, {email, password});
-    } catch (error) {
-      
-      throw new HttpException(error, HttpStatus.NOT_FOUND);
-    }
-  }
-
-  @Post()
-  async NewUser(
-    @Body() newUserData:UserDto,
-    @Body() credentialDta:CredentialDto
-  ): Promise<User>{
-    try {
-      return await this.usersService.newUser(newUserData, credentialDta)
-    } catch (error) {
-      if(error instanceof HttpException)throw error
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
-    }
-   
   }
 
 

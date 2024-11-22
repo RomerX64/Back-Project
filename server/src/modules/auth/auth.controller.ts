@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpException, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import ICredential from "src/interfaces/ICredential";
+import { User } from "../users/User.entity";
+import UserDto from "src/dto/UserDto";
 import CredentialDto from "src/dto/CredentialDto";
-import { IsAdminGuard } from "src/guards/isAdmin.guard";
 
 @Controller('auth')
 
@@ -11,31 +11,28 @@ export class AuthController{
         private readonly authService:AuthService
     ){}
 
-    @Get(':userId')
-    @UseGuards(IsAdminGuard)
-    async getEmailByUserId(
-        @Param('userId') userId:string,
-    ):Promise<string>{
+    @Post('singUp')
+    async singUp(
+        @Body() user:UserDto
+    ):Promise<User>{
         try {
-            return this.authService.getEmailByUserId(Number(userId))
-        } catch (error) {
-         if(error instanceof HttpException)throw error
-         throw new HttpException(error, HttpStatus.CONFLICT)   
-        }
-    }
-
-    @Post()
-    async getCredential(
-        @Body() credentialDta:CredentialDto,
-    ):Promise<ICredential>{
-        try {
-            if(!credentialDta || Object.keys(credentialDta).length === 0 )throw new HttpException('No data provided to update',HttpStatus.NO_CONTENT)
-                return this.authService.getCredential( credentialDta)
+            return await this.authService.singUp(user)
         } catch (error) {
             if(error instanceof HttpException)throw error
             throw new HttpException(error, HttpStatus.CONFLICT)
         }
     }
 
-    
+    @Post('singIn')
+    async singIn(
+        @Body() credentialData:CredentialDto
+    ):Promise<User>{
+        try {
+            return await this.authService.singIn(credentialData)
+        } catch (error) {
+            if(error instanceof HttpException)throw error
+            throw new HttpException(error, HttpStatus.CONFLICT)
+        }
+    }
+
 }

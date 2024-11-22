@@ -14,41 +14,6 @@ export class UserDBService{
         @InjectRepository(Credential) private credentialRepository:Repository<Credential>
     ){}
 
-    async newUser(newUserData: UserDto, credentialDta: CredentialDto): Promise<User> {
-        try {
-            const Ce = await this.credentialRepository.findOne({where:{email:credentialDta.email}})
-            if(Ce)throw new HttpException('This mail already exist', HttpStatus.CONFLICT)
-            
-            const C = await this.credentialRepository.create(credentialDta)
-            await this.credentialRepository.save(C)
-            const U = await this.userRepository.create(newUserData)
-         
-            U.credential = C
-            await this.userRepository.save(U)
-            console.log(U)
-            return U
-
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async getUser(userId:string, credentialDta:CredentialDto):Promise<User>{
-        try {
-            const user:User|undefined = await this.userRepository.findOne({   
-                where: { id: userId },
-                relations: ['credential']
-            })
-            if(!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-            if(user.credential.email !== credentialDta.email)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
-            if(user.credential.password !== credentialDta.password)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
-            
-            return user
-        } catch (error) {
-            throw error
-        }
-    }
-
     async getUsers():Promise<User[]>{
         try {
             const users:User[] | undefined = await this.userRepository.find()
