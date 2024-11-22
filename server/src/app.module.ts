@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeOrmConfig from './config/typeorm';
 import { CloudinaryConfig } from './config/cloudinary';
 import { CloudinaryService } from './common/cloudinary.service';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,7 +19,12 @@ import { CloudinaryService } from './common/cloudinary.service';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => configService.get('typeorm')
     }),
-    UserModule, ProductModule, OrderModule, AuthModule,   
+    UserModule, ProductModule, OrderModule, AuthModule,
+    JwtModule.register({
+      global:true,
+      signOptions:{ expiresIn:'24h' },
+      secret: process.env.JWT_SECRET
+    })
   ],
   controllers: [],
   providers: [CloudinaryConfig, CloudinaryService],

@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 function isAdminValidate(req:Request){
     const range = req.headers['range']
     const password = req.headers['password']
-    return range === 'admin ' && password === 'admin'
+    return range === 'admin' && password === 'admin'
 }
 
 @Injectable()

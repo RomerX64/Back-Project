@@ -23,10 +23,8 @@ class UserDto{
     @IsString()    
     phone: string
 
-    @IsString()
     country?: string | undefined
 
-    @IsString()
     city?: string | undefined
 }
 

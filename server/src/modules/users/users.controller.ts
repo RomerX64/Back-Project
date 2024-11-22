@@ -4,6 +4,7 @@ import CredentialDto from 'src/dto/CredentialDto';
 import { UserDBService } from './UserDB.service';
 import { User } from './User.entity';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { IsAdminGuard } from 'src/guards/IsAdmin.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UserDBService) {
@@ -14,6 +15,18 @@ export class UsersController {
     return await this.usersService.getUsers()
   }
 
+  @Get(':id')
+  @UseGuards(IsAdminGuard)
+  async getUserById(
+    @Param('Id') id:string
+  ):Promise<User>{
+    try {
+      return await this.usersService.getUserById(id)
+    } catch (error) {
+      if(error instanceof HttpException)throw error
+      throw new HttpException(error,HttpStatus.CONFLICT)
+    }
+  }
 
   @Put(':userId')
   @UseGuards(AuthGuard)

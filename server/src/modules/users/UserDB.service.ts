@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import CredentialDto from "src/dto/CredentialDto";
 import UserDto from "src/dto/UserDto";
 import { Credential } from "../auth/credential.entity";
+import * as bcrypt from "bcrypt"
 
 
 @Injectable()
@@ -24,15 +25,28 @@ export class UserDBService{
         }
     }
 
+    async getUserById(id:string):Promise<User>{
+        try {
+            const User = await this.userRepository.findOne({where:{id:id}})
+            if(!User)throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+            
+            return User
+        } catch (error) {
+            throw error
+        }
+    }
+
     async deleteUser(userId:string, credentialDta:CredentialDto):Promise<User>{
         try {
-            const user:User|undefined = await this.userRepository.findOne({   
-                where: { id: userId },
-                relations: ['credential']
-            })
-            if(!user)throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-            if(user.credential.email !== credentialDta.email)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
-            if(user.credential.password !== credentialDta.password)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
+            const credential = await this.credentialRepository.findOne({where:{email:credentialDta.email}})
+            if(!credential)throw new HttpException('Email not found', HttpStatus.NOT_FOUND)
+            
+            const password = await bcrypt.hash(credentialDta.password, 10)
+            if(password !== credential.password)throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED)
+            
+            const user = await this.userRepository.findOne({where:{id:credential.user.id}})
+            if(!user) throw new HttpException('User not Found', HttpStatus.NOT_FOUND)
+
             this.userRepository.remove(user)
             return user
         } catch (error) {
@@ -51,6 +65,7 @@ export class UserDBService{
             user.phone = userdta.phone
             user.country = userdta.country
             user.city = userdta.city
+
             this.userRepository.save(user)
             return user
         } catch (error) {

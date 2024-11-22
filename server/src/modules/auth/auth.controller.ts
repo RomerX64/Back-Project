@@ -26,7 +26,7 @@ export class AuthController{
     @Post('singIn')
     async singIn(
         @Body() credentialData:CredentialDto
-    ):Promise<User>{
+    ){
         try {
             return await this.authService.singIn(credentialData)
         } catch (error) {
@@ -34,5 +34,6 @@ export class AuthController{
             throw new HttpException(error, HttpStatus.CONFLICT)
         }
     }
+
 
 }
