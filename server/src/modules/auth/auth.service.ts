@@ -3,7 +3,7 @@ import UserDto from "../../dto/UserDto";
 import { Repository } from "typeorm";
 import { User } from "../users/User.entity";
 import { Credential } from "./credential.entity";
-import * as bcrypt from "bcrypt"
+import * as bcrypt from "bcryptjs"
 import CredentialDto from "../../dto/CredentialDto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
@@ -60,7 +60,7 @@ export class AuthService {
             }
                 
             const token = this.jwtService.sign(userPayload)
-            return {success:'User logged successfully', token}
+            return {success:'User logged successfully', token, user}
         } catch (error) {
             throw error
         }

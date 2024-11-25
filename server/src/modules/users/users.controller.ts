@@ -4,6 +4,7 @@ import CredentialDto from '../../dto/CredentialDto';
 import { UserDBService } from './UserDB.service';
 import { User } from './User.entity';
 import { AuthGuard } from '../../guards/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UserDBService) {
@@ -14,6 +15,7 @@ export class UsersController {
     return await this.usersService.getUsers()
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   @UseGuards(AuthGuard)
   async getUserById(

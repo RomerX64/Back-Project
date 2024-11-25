@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import CredentialDto from "../../dto/CredentialDto";
 import UserDto from "../../dto/UserDto";
 import { Credential } from "../auth/credential.entity";
-import * as bcrypt from "bcrypt"
+import * as bcrypt from "bcryptjs"
 
 
 @Injectable()
