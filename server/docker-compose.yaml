@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nestapp:
-    build: ./
+    image: romerx64/nest-demo:latest
     ports:
       - "3001:3000"
     env_file:
