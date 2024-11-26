@@ -29,6 +29,7 @@ export class UsersController {
     }
   }
 
+  @ApiBearerAuth()
   @Put(':userId')
   @UseGuards(AuthGuard)
   async updateUser(
@@ -44,6 +45,7 @@ export class UsersController {
       }
   }
  
+  @ApiBearerAuth()
   @Delete(':userId')
   @UseGuards(AuthGuard)
   async deleteUser(

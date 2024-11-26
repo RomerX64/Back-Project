@@ -22,9 +22,9 @@ async function bootstrap() {
   .setDescription('Documentacion de la API de la tienda online')
   .setVersion('1.0.0').build()
   
-
   const document = SwaggerModule.createDocument(app,swaggerConfig)
-  SwaggerModule.setup('api', app, document)
+  SwaggerModule.setup('api', app, document) 
   await app.listen(process.env.PORT ?? 3000);
+
 }
 bootstrap();

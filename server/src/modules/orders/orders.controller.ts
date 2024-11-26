@@ -3,6 +3,7 @@ import { OrderDBService } from './orderDB.service';
 import { Order } from './order.entity';
 import { OrderDetail } from './orderDetail.entity';
 import { AuthGuard } from '../../guards/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 
 
@@ -22,6 +23,7 @@ export class OrdersController {
         }
     }
 
+    @ApiBearerAuth()
     @Get(':orderId')
     @UseGuards(AuthGuard)
     async getOrder(
@@ -38,6 +40,7 @@ export class OrdersController {
         }
     }
 
+    @ApiBearerAuth()
     @Post()
     @UseGuards(AuthGuard)
     async newDetail(
@@ -57,6 +60,7 @@ export class OrdersController {
         }
     }
 
+    @ApiBearerAuth()
     @Put(':detailId')
     @UseGuards(AuthGuard)
     async updateOrder(
@@ -77,6 +81,7 @@ export class OrdersController {
         }
     }
 
+    @ApiBearerAuth()
     @Delete(':orderId')
     @UseGuards(AuthGuard)
     async deleteOrder(

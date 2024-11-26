@@ -7,6 +7,7 @@ import { RolesGuard } from "../../guards/roles.guard";
 import { Roles } from "../../decorators/roles.decorator";
 import { Role } from "../auth/roles.enum";
 import { AuthGuard } from "../../guards/auth.guard";
+import { ApiBearerAuth } from "@nestjs/swagger";
 
 
 @Controller('categories')
@@ -26,6 +27,7 @@ export class CategoryController {
         }
     }
 
+    @ApiBearerAuth()
     @Post()
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)
@@ -40,7 +42,7 @@ export class CategoryController {
         }
     }
 
-
+    @ApiBearerAuth()
     @Post(':name')
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)
@@ -56,7 +58,7 @@ export class CategoryController {
     }
 
 
-
+    @ApiBearerAuth()
     @Put()
     @Roles(Role.Admin)
     @UseGuards(AuthGuard, RolesGuard)

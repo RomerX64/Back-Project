@@ -4,6 +4,7 @@ import { ProductsDBService } from './productsDB.service';
 import { Product } from './product.entity';
 import { RolesGuard } from '../../guards/roles.guard';
 import { AuthGuard } from '../../guards/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 
 @Controller('products')
@@ -33,6 +34,7 @@ export class ProductController{
         }
     }
 
+    @ApiBearerAuth()
     @Post()
     @UseGuards(AuthGuard, RolesGuard)
     async newProduct( 
@@ -47,6 +49,7 @@ export class ProductController{
         }
     }
 
+    @ApiBearerAuth()
     @Post('varios')
     @UseGuards(AuthGuard, RolesGuard)
     async newProducts(
@@ -61,6 +64,7 @@ export class ProductController{
         }
     }
 
+    @ApiBearerAuth()
     @Put(':id')
     @UseGuards(AuthGuard, RolesGuard)
     async updateProduct(
