@@ -2,14 +2,12 @@ FROM node:18
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY ./server/package*.json ./
 
 RUN npm install --omit=dev
 
-COPY . .
-
-RUN npm run build
+COPY ./server/ .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start"]
